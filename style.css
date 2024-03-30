@@ -1,0 +1,45 @@
+.signature-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.buttons {
+    margin-bottom: 20px;
+}
+
+.signature-pad {
+    position: relative;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+#signatureCanvas {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-bottom: 2px solid #ccc;
+}
+
+.backgrd {
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+}
+
+/* Responsive styling */
+@media only screen and (max-width: 600px) {
+    .signature-container {
+        padding: 10px;
+    }
+}
