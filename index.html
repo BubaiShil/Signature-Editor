@@ -13,7 +13,8 @@
 <body>
     <div class="signature-container">
         <div class="buttons">
-            <button id="saveButton">Download</button>
+            <button id="saveButtonPDF">Download as PDF</button>
+            <button id="saveButtonPNG">Download as PNG</button>
             <button id="clear-btn">Clear</button>
         </div>
         <div id="signature-pad" class="signature-pad">
@@ -21,6 +22,10 @@
         </div>
         <div class="backgrd">
             <button id="changeBackgroundBtn">Change Background</button>
+            <label for="brushColor">Brush Color:</label>
+            <input type="color" id="brushColor" value="#000000">
+            <label for="brushWidth">Brush Width:</label>
+            <input type="number" id="brushWidth" value="2" min="1" max="20">
         </div>
     </div>
 
@@ -29,35 +34,53 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
-
         document.addEventListener("DOMContentLoaded", function () {
             const canvas = document.querySelector('#signatureCanvas');
-            const signaturePad = new SignaturePad(canvas);
+            const signaturePad = new SignaturePad(canvas, {
+                minWidth: 1,
+                maxWidth: 3,
+                penColor: "#000000" // Default pen color
+            });
             const { jsPDF } = window.jspdf;
 
-            const saveButton = document.querySelector('#saveButton');
-            saveButton.addEventListener('click', function () {
-                //new canvas to include background color
+            const saveButtonPDF = document.querySelector('#saveButtonPDF');
+            saveButtonPDF.addEventListener('click', function () {
+                // Create a new canvas element to include the background color
                 const tempCanvas = document.createElement('canvas');
                 const tempCtx = tempCanvas.getContext('2d');
                 tempCanvas.width = canvas.width;
                 tempCanvas.height = canvas.height;
 
-                //background color onto the temporary canvas
-                const pad = document.querySelector("#signature-pad")
-                tempCtx.fillStyle = pad.style.backgroundColor;
+                // Get the background color from the .signature-pad class
+                const pad = document.querySelector(".signature-pad");
+                const backgroundColor = window.getComputedStyle(pad).backgroundColor;
+                
+                // Fill the temporary canvas with the background color
+                tempCtx.fillStyle = backgroundColor;
                 tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
 
-                //the signature image onto the temporary canvas
+                // Draw the signature onto the temporary canvas
                 tempCtx.drawImage(canvas, 0, 0);
 
-                // the temporary canvas to data URL
+                // Convert the temporary canvas to data URL
                 const signatureImage = tempCanvas.toDataURL();
 
-                // PDF and add the signature image
+                // Create a PDF and add the signature image
                 const doc = new jsPDF();
                 doc.addImage(signatureImage, 'PNG', 10, 10, 100, 50);
                 doc.save('signed_document.pdf');
+            });
+
+            const saveButtonPNG = document.querySelector('#saveButtonPNG');
+            saveButtonPNG.addEventListener('click', function () {
+                // Convert canvas to PNG image and download it
+                const signatureImage = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = signatureImage;
+                link.download = 'signature.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             });
 
             document.getElementById('clear-btn').addEventListener('click', function () {
@@ -78,14 +101,26 @@
             };
 
             backbtn.addEventListener("click", () => {
-                const pad = document.querySelector("#signature-pad");
+                const pad = document.querySelector(".signature-pad");
                 pad.style.backgroundColor = changeBackground();
             });
+
+            // Set brush color
+            const brushColorInput = document.getElementById('brushColor');
+            brushColorInput.addEventListener('input', function () {
+                signaturePad.penColor = this.value;
+            });
+
+            // Set brush width
+            const brushWidthInput = document.getElementById('brushWidth');
+            brushWidthInput.addEventListener('change', function () {
+                const width = parseInt(this.value);
+                signaturePad.minWidth = width;
+                signaturePad.maxWidth = width;
+            });
         });
-
-
     </script>
-
 </body>
 
 </html>
+

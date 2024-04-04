@@ -1,12 +1,18 @@
 .signature-container {
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 100%;
     padding: 20px;
     text-align: center;
 }
 
 .buttons {
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.buttons button {
+    margin: 5px;
 }
 
 .signature-pad {
@@ -14,6 +20,7 @@
     border: 2px solid #ccc;
     border-radius: 8px;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 #signatureCanvas {
@@ -43,3 +50,5 @@ button {
         padding: 10px;
     }
 }
+
+
